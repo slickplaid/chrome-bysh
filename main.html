@@ -38,7 +38,7 @@ var displayAccounts = function(){
   if(accounts.length){
     accounts.forEach(function(user,i){
       var data = JSON.parse(localStorage[user]);
-        $('#accounts').append('<div class="account a'+i+'" user="'+user+'">'+
+        $('#accounts').append('<div class="account a'+i+'" apikey="'+user+'">'+
                               '<h1 class="user">'+data.login+'</h1>'+
                               '</div>');
         var boxes = Object.keys(data.boxes);
@@ -58,18 +58,18 @@ var displayAccounts = function(){
 ,plotData = function(){
   $('.account').each(function(){
     var $this = $(this)
-    ,user = $(this).attr('user')
-    ,account = JSON.parse(localStorage[user]);
+    ,apikey = $(this).attr('apikey')
+    ,account = JSON.parse(localStorage[apikey]);
     $this.find('.plot').each(function(){
       var box = $(this).attr('box')
       ,data = account.boxes[box]
       ,line = [];
+
       data.forEach(function(d,i){
         line.push([i,d.percent]);
       });
-      console.log(line, data, box, account, user, $this);
-      // FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU!
-      $.plot($(this), line);
+
+     $.plot($(this), [line]);
     });
   });
 }

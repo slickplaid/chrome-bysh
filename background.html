@@ -7,7 +7,7 @@ subscriptions = {
   ,settings: {
     url: 'http://bytesized-hosting.com/api/profile/'
     ,testData: 'testdata.xml'
-    ,interval: 1000*60*10 // ten minutes
+    ,interval: 1000*10 // ten minutes *60*10
     ,ajaxParams: {
       cache: false
       ,dataType: 'xml'
@@ -123,7 +123,7 @@ $(function(){
         subscriptions.newAccount(userData.apikey, userData.boxes);
         // now store each timer instance in a variable so we can stop it if needed.
         subscriptions.timers[apikey] = setInterval(function(){
-          console.log('Poking account: '+user);
+          console.log('Poking account: '+apikey);
           subscriptions.accounts[apikey].poke();
         }, subscriptions.settings.interval);
       } else {
