@@ -15,29 +15,27 @@ subscriptions = {
     }
   }
   // this function also loads old accounts into memory
-  ,newAccount: function(user,pass,boxes){
+  ,newAccount: function(apikey,boxes){
     // store account data
     var account = {
-      user: user
-      ,pass: pass // this will need to be hashed so the password isn't stored plaintext
+      apikey: apikey
+			,login: "unknown"
       ,boxes: (boxes) ? boxes : {} // initialize or load box storage
       ,poke: function(callback){
-        $.ajax(//subscriptions.settings.testData,
-               // subscriptions.settings.url+user+'/'+pass,
-               subscriptions.settings.url,
-               //subscriptions.settings.ajaxParams
+        $.ajax(subscriptions.settings.url,
                {
                 cache: false
                 ,data: {
-                  api_key: pass
+                  api_key: apikey
                 }
                 })
          .success(function(data, textStatus, xhr){
           var res = $(data)
-            ,login = res.find('login')
-            ,balance = res.find('balance')
+            ,login = res.find('login').text()
+            ,balance = res.find('balance').text()
             ,len = res.length;
-          console.log(res.find('shared_account'));
+						console.log(login)
+						subscriptions.accounts[apikey].login = login;
           res.find('shared_account').each(function(i){
             var $this = $(this),
             response = {
@@ -54,16 +52,16 @@ subscriptions = {
               ,upgradeAvailable: $this.find('upgrade_available').text()
             };
             // we'll push the data and save it to local storage, removing all but the newest 100 responses
-            if(!(subscriptions.accounts[user].boxes[response.box] instanceof Array))
-              subscriptions.accounts[user].boxes[response.box] = []; // hacky way to test :(
-            if(subscriptions.accounts[user].boxes[response.box].push(response) > 100){
+            if(!(subscriptions.accounts[apikey].boxes[response.box] instanceof Array))
+              subscriptions.accounts[apikey].boxes[response.box] = []; // hacky way to test :(
+            if(subscriptions.accounts[apikey].boxes[response.box].push(response) > 100){
               // we might save historical data longer in the future
               // but for now, just keep the last 100 data points.
               // Might change this to while() to grab any extra stragglers
-              subscriptions.accounts[user].boxes[response.box].shift();
+              subscriptions.accounts[apikey].boxes[response.box].shift();
             }
           }); // end shared-account loop
-          localStorage[user] = JSON.stringify(subscriptions.accounts[user]);
+          localStorage[apikey] = JSON.stringify(subscriptions.accounts[apikey]);
           if(typeof callback === 'function'){
             callback(true);
           }
@@ -71,21 +69,21 @@ subscriptions = {
       } // end poke
       ,destroy: function(){
         var accts = JSON.parse(localStorage.accounts)
-          ,i = accts.indexOf(user);
+          ,i = accts.indexOf(apikey);
           
         accts.splice(i, 1);
         localStorage.accounts = JSON.stringify(accts);        
-        delete subscriptions.accounts[user];
-        delete localStorage[user];
-        delete subscriptions.timers[user];
+        delete subscriptions.accounts[apikey];
+        delete localStorage[apikey];
+        delete subscriptions.timers[apikey];
         
       }
     };
     // put in account array and save account name in localStorage
-    subscriptions.accounts[user] = account;
+    subscriptions.accounts[apikey] = account;
     var accts = (localStorage.accounts) ? JSON.parse(localStorage.accounts) : [];
-    if($.inArray(user, accts) === -1){ // old or new?
-      accts.push(user);
+    if($.inArray(apikey, accts) === -1){ // old or new?
+      accts.push(apikey);
       localStorage.accounts = JSON.stringify(accts);
     }
   }
@@ -94,13 +92,13 @@ subscriptions = {
 
 // message passing
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse){
-  if(request.method == 'save' && request.user !== undefined && request.pass !== undefined){
-    subscriptions.newAccount(request.user, request.pass);
-    subscriptions.accounts[request.user].poke(function(){
+  if(request.method == 'save' && request.apikey !== undefined){
+    subscriptions.newAccount(request.apikey);
+    subscriptions.accounts[request.apikey].poke(function(){
       sendResponse({status: 'OK'});
     });
-  } else if(request.method == 'delete' && request.user !== undefined){
-    subscriptions.accounts[request.user].destroy();
+  } else if(request.method == 'delete' && request.apikey !== undefined){
+    subscriptions.accounts[request.apikey].destroy();
     sendResponse({status: 'OK'});
   }
   console.log(sender.tab);
@@ -118,21 +116,21 @@ $(function(){
     // we found some accounts, let's load the old data in to memory
     var accounts = JSON.parse(localStorage.accounts);
     
-    accounts.forEach(function(user){ // loop through the accounts
+    accounts.forEach(function(apikey){ // loop through the accounts
       // now that we know the username, we can find the old data in localStorage
-      if(localStorage[user]){ // make sure it's really there
-        var userData = JSON.parse(localStorage[user]);
-        subscriptions.newAccount(userData.user, userData.pass, userData.boxes);
+      if(localStorage[apikey]){ // make sure it's really there
+        var userData = JSON.parse(localStorage[apikey]);
+        subscriptions.newAccount(userData.apikey, userData.boxes);
         // now store each timer instance in a variable so we can stop it if needed.
-        subscriptions.timers[user] = setInterval(function(){
+        subscriptions.timers[apikey] = setInterval(function(){
           console.log('Poking account: '+user);
-          subscriptions.accounts[user].poke();
+          subscriptions.accounts[apikey].poke();
         }, subscriptions.settings.interval);
       } else {
         // something happened to their data, wipe accounts and start over :(
         delete localStorage.accounts;
-        delete localStorage[user];
-        console.warn('Account data does not exist for user '+user);
+        delete localStorage[apikey];
+        console.warn('Account data does not exist for apikey '+apikey);
       }
     });
   }

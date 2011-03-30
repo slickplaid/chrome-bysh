@@ -35,12 +35,11 @@ var what;
 
 var displayAccounts = function(){
   var accounts = (localStorage.accounts) ? JSON.parse(localStorage.accounts) : [];
-  
   if(accounts.length){
     accounts.forEach(function(user,i){
       var data = JSON.parse(localStorage[user]);
         $('#accounts').append('<div class="account a'+i+'" user="'+user+'">'+
-                              '<h1 class="user">'+data.user+'</h1>'+
+                              '<h1 class="user">'+data.login+'</h1>'+
                               '</div>');
         var boxes = Object.keys(data.boxes);
         boxes.forEach(function(box,x){
