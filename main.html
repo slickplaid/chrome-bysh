@@ -44,7 +44,10 @@ var displayAccounts = function(){
                               '</div>');
         var boxes = Object.keys(data.boxes);
         boxes.forEach(function(box,x){
+          var l = data.boxes[box].length;
+          
           $('.a'+i).append('<h2 class="box">'+box+'</h2>'+
+                           '<span>'+data.boxes[box][l-1].liveQuota+'</span>'+
                            '<div class="a'+i+'stat'+x+' plot" box="'+box+'"'+
                            'style="width: 300px; height: 100px;"></div>');
           
