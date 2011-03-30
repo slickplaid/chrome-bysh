@@ -81,12 +81,6 @@ var displayAccounts = function(){
           $('.a'+i).append('<div class="account-info"><span class="box">'+box+'</span><span class="quota">' + data.boxes[box][l-1].liveQuota + '</span></div>'+
                            '<div class="graph-wrapper"><div class="a'+i+'stat'+x+' plot" box="'+box+'"'+
                            'style="width: 300px; height: 100px;"></div></div>');
-          
-          // $('.a'+i).append('<h2 class="box">'+box+' ' + data.boxes[box][l-1].liveQuota + '</h2>'+
-          //                  '<span>'+data.boxes[box][l-1].liveQuota+'</span>'+
-          //                  '<div class="a'+i+'stat'+x+' plot" box="'+box+'"'+
-          //                  'style="width: 300px; height: 100px;"></div>');
-          
         });
         
     });
@@ -108,7 +102,7 @@ var displayAccounts = function(){
         line.push([i,d.quota]);
       });
 
-     $.plot($(this), [line],{yaxis: {min: 0, max: max_quota}});
+     $.plot($(this), [{data: line, color: "#76857e"}],{yaxis: {min: 0, max: max_quota, color: '#FFF'}, xaxis: {color: '#FFF'},grid: {backgroundColor: { colors: ["#000", "#111"] }}});
     });
   });
 }
