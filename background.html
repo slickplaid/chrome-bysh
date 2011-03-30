@@ -77,6 +77,7 @@ subscriptions = {
         localStorage.accounts = JSON.stringify(accts);        
         delete subscriptions.accounts[user];
         delete localStorage[user];
+        delete subscriptions.timers[user];
         
       }
     };
