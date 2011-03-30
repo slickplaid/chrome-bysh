@@ -1,0 +1,30 @@
+<user>
+<login>test</login>
+<balance type="float">0.0</balance>
+	<shared_accounts type="array">
+		<shared_account>
+			<server_name>test</server_name>
+			<cached_quota>95.7214</cached_quota>
+			<percentage_quota>87.0181818181818</percentage_quota>
+			<live_quota>95.72GB / 110GB</live_quota>
+			<soft_quota>110</soft_quota>
+			<hard_quota>121.0</hard_quota>
+			<days_till_deletion>29</days_till_deletion>
+			<paid_till type="datetime">2011-04-24</paid_till>
+			<web_vnc_link>http://test.bytesized-hosting.com:666</web_vnc_link>
+			<upgrade_available>true</upgrade_available>
+		</shared_account>
+		<shared_account>
+			<server_name>test2</server_name>
+			<cached_quota>0.0432</cached_quota>
+			<percentage_quota>0.0363636363636364</percentage_quota>
+			<live_quota>0.04GB / 110GB</live_quota>
+			<soft_quota>110</soft_quota>
+			<hard_quota>121.0</hard_quota>
+			<days_till_deletion>31</days_till_deletion>
+			<paid_till type="datetime">2011-04-26</paid_till>
+			<web_vnc_link>http://test2.bytesized-hosting.com:666</web_vnc_link>
+			<upgrade_available>false</upgrade_available>
+		</shared_account>
+	</shared_accounts>
+</user>

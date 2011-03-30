@@ -1,0 +1,146 @@
+<!doctype html><head><script src="http://code.jquery.com/jquery-1.5.1.js" type="text/javascript"></script><script>
+
+var version,
+subscriptions = {
+  accounts: {}
+  ,timers: {}
+  ,settings: {
+    url: 'http://bytesized-hosting.com/api/profile/'
+    ,testData: 'testdata.xml'
+    ,interval: 1000*60*10 // ten minutes
+    ,ajaxParams: {
+      cache: false
+      ,dataType: 'xml'
+      ,headers: { 'X-Powered-By': 'BySH Chrome Plugin' }
+    }
+  }
+  // this function also loads old accounts into memory
+  ,newAccount: function(user,pass,boxes){
+    // store account data
+    var account = {
+      user: user
+      ,pass: pass // this will need to be hashed so the password isn't stored plaintext
+      ,boxes: (boxes) ? boxes : {} // initialize or load box storage
+      ,poke: function(callback){
+        $.ajax(//subscriptions.settings.testData,
+               // subscriptions.settings.url+user+'/'+pass,
+               subscriptions.settings.url,
+               //subscriptions.settings.ajaxParams
+               {
+                cache: false
+                ,data: {
+                  api_key: pass
+                }
+                })
+         .success(function(data, textStatus, xhr){
+          var res = $(data)
+            ,login = res.find('login')
+            ,balance = res.find('balance')
+            ,len = res.length;
+          console.log(res.find('shared_account'));
+          res.find('shared_account').each(function(i){
+            var $this = $(this),
+            response = {
+              quota: $this.find('cached_quota').text()
+              ,at: new Date()
+              ,limit: $this.find('soft_quota').text()
+              ,hardLimit: $this.find('hard_quota').text()
+              ,box: $this.find('server_name').text()
+              ,percent: Math.round($this.find('percentage_quota').text())
+              ,liveQuota: $this.find('live_quota').text()
+              ,daysTillDelete: $this.find('days_till_deletion').text()
+              ,paidTill: $this.find('paid_till').text()
+              ,webVNCLink: $this.find('web_vnc_link').text()
+              ,upgradeAvailable: $this.find('upgrade_available').text()
+            };
+            // we'll push the data and save it to local storage, removing all but the newest 100 responses
+            if(!(subscriptions.accounts[user].boxes[response.box] instanceof Array))
+              subscriptions.accounts[user].boxes[response.box] = []; // hacky way to test :(
+            if(subscriptions.accounts[user].boxes[response.box].push(response) > 100){
+              // we might save historical data longer in the future
+              // but for now, just keep the last 100 data points.
+              // Might change this to while() to grab any extra stragglers
+              subscriptions.accounts[user].boxes[response.box].shift();
+            }
+          }); // end shared-account loop
+          localStorage[user] = JSON.stringify(subscriptions.accounts[user]);
+          if(typeof callback === 'function'){
+            callback(true);
+          }
+        }); // end ajax
+      } // end poke
+      ,destroy: function(){
+        var accts = JSON.parse(localStorage.accounts)
+          ,i = accts.indexOf(user);
+          
+        accts.splice(i, 1);
+        localStorage.accounts = JSON.stringify(accts);        
+        delete subscriptions.accounts[user];
+        delete localStorage[user];
+        
+      }
+    };
+    // put in account array and save account name in localStorage
+    subscriptions.accounts[user] = account;
+    var accts = (localStorage.accounts) ? JSON.parse(localStorage.accounts) : [];
+    if($.inArray(user, accts) === -1){ // old or new?
+      accts.push(user);
+      localStorage.accounts = JSON.stringify(accts);
+    }
+  }
+};
+
+
+// message passing
+chrome.extension.onRequest.addListener(function(request, sender, sendResponse){
+  if(request.method == 'save' && request.user !== undefined && request.pass !== undefined){
+    subscriptions.newAccount(request.user, request.pass);
+    subscriptions.accounts[request.user].poke(function(){
+      sendResponse({status: 'OK'});
+    });
+  } else if(request.method == 'delete' && request.user !== undefined){
+    subscriptions.accounts[request.user].destroy();
+    sendResponse({status: 'OK'});
+  }
+  console.log(sender.tab);
+  console.log(request);
+});
+
+$(function(){
+  // let's see if there are any saved accounts
+  // or if we're using an old version of the script (just in case, sanity ya know?)
+  if(localStorage.accounts === undefined || !(JSON.parse(localStorage.accounts) instanceof Array)){
+    console.log('enter account details!');
+    // nope! let's tell them to enter their account details
+    window.open('options.html', 'bysh-options');
+  } else {
+    // we found some accounts, let's load the old data in to memory
+    var accounts = JSON.parse(localStorage.accounts);
+    
+    accounts.forEach(function(user){ // loop through the accounts
+      // now that we know the username, we can find the old data in localStorage
+      if(localStorage[user]){ // make sure it's really there
+        var userData = JSON.parse(localStorage[user]);
+        subscriptions.newAccount(userData.user, userData.pass, userData.boxes);
+        // now store each timer instance in a variable so we can stop it if needed.
+        subscriptions.timers[user] = setInterval(function(){
+          console.log('Poking account: '+user);
+          subscriptions.accounts[user].poke();
+        }, subscriptions.settings.interval);
+      } else {
+        // something happened to their data, wipe accounts and start over :(
+        delete localStorage.accounts;
+        delete localStorage[user];
+        console.warn('Account data does not exist for user '+user);
+      }
+    });
+  }
+});
+
+(function(){
+  $.get('manifest.json', function(data){
+    data = JSON.parse(data);
+    version = data.version;
+  });
+})
+</script>
