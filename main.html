@@ -58,18 +58,20 @@ var displayAccounts = function(){
 ,plotData = function(){
   $('.account').each(function(){
     var $this = $(this)
+		,max_quota = 110
     ,apikey = $(this).attr('apikey')
     ,account = JSON.parse(localStorage[apikey]);
     $this.find('.plot').each(function(){
       var box = $(this).attr('box')
       ,data = account.boxes[box]
-      ,line = [];
+      ,line = []
+			,max_quota = account.boxes[box][0].hardLimit;
 
       data.forEach(function(d,i){
-        line.push([i,d.percent]);
+        line.push([i,d.quota]);
       });
 
-     $.plot($(this), [line]);
+     $.plot($(this), [line],{yaxis: {min: 0, max: max_quota}});
     });
   });
 }
