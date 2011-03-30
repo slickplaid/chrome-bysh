@@ -100,6 +100,7 @@ var displayAccounts = function(){
 
       data.forEach(function(d,i){
         line.push([i,d.quota]);
+
       });
 
      $.plot($(this), [{data: line, color: "#76857e"}],{yaxis: {min: 0, max: max_quota, color: '#FFF'}, xaxis: {color: '#FFF'},grid: {backgroundColor: { colors: ["#000", "#111"] }}});
