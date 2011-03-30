@@ -76,6 +76,7 @@ subscriptions = {
         localStorage.accounts = JSON.stringify(accts);        
         delete subscriptions.accounts[apikey];
         delete localStorage[apikey];
+        clearInterval(subscriptions.timers[apikey]);
         delete subscriptions.timers[apikey];
         
       }
@@ -131,6 +132,9 @@ $(function(){
         // something happened to their data, wipe accounts and start over :(
         delete localStorage.accounts;
         delete localStorage[apikey];
+        clearInterval(subscriptions.timers[apikey]);
+        delete subscriptions.timers[apikey];
+        delete subscriptions.accounts[apikey];
         console.warn('Account data does not exist for apikey '+apikey);
       }
     });
