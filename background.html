@@ -63,9 +63,13 @@ subscriptions = {
             }
           }); // end shared-account loop
           localStorage[apikey] = JSON.stringify(subscriptions.accounts[apikey]);
+          //console.log(xhr.status);
           if(typeof callback === 'function'){
-            callback(true);
+            callback(xhr.status);
           }
+        }).error(function(xhr, status){
+          console.log(status, xhr.status);
+          callback(xhr.status);
         }); // end ajax
       } // end poke
       ,destroy: function(){
@@ -96,7 +100,10 @@ subscriptions = {
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse){
   if(request.method == 'save' && request.apikey !== undefined){
     subscriptions.newAccount(request.apikey);
-    subscriptions.accounts[request.apikey].poke(function(){
+    subscriptions.accounts[request.apikey].poke(function(status){
+      if(status == '500'){
+        sendResponse({status: '500'});
+      } else if(status == '')
       sendResponse({status: 'OK'});
     });
   } else if(request.method == 'delete' && request.apikey !== undefined){

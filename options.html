@@ -104,7 +104,7 @@ $(function(){
 						page: 'options',
 						apikey: $this.parent().parent().find('input[name=apikey]').val()
 				}, function(res){
-						if(res.status == 'OK'){
+						if(res.status == '200'){
 								$('#status').fadeIn(500).delay(2000).fadeOut(1000);
 								$('#status').text('Account saved.');
 								var timeout = setTimeout(function(){
@@ -112,7 +112,8 @@ $(function(){
 								}, 1000);
 								$this.parent().parent().parent().detach();
 						} else {
-							alert("Could not save account.")
+								$('#status').fadeIn(500).delay(2000).fadeOut(1000);
+								$('#status').text('Could not save account. Error '+res.status);
 						}
 				});
 				return false;
