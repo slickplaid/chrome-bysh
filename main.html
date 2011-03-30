@@ -72,7 +72,7 @@ var displayAccounts = function(){
     accounts.forEach(function(user,i){
       var data = JSON.parse(localStorage[user]);
         $('#accounts').append('<div class="account a'+i+'" apikey="'+user+'">'+
-                              '<h1 class="user">'+data.login+'</h1>'+
+                              '<h1 class="user">'+data.login + '<span style="float:right">&euro;'+ data.balance+'</span</h1>'+
                               '</div>');
         var boxes = Object.keys(data.boxes);
         boxes.forEach(function(box,x){

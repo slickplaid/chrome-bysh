@@ -20,6 +20,7 @@ subscriptions = {
     var account = {
       apikey: apikey
 			,login: "unknown"
+			,balance: "unknown"
       ,boxes: (boxes) ? boxes : {} // initialize or load box storage
       ,poke: function(callback){
         $.ajax(subscriptions.settings.url,
@@ -34,8 +35,8 @@ subscriptions = {
             ,login = res.find('login').text()
             ,balance = res.find('balance').text()
             ,len = res.length;
-						console.log(login)
 						subscriptions.accounts[apikey].login = login;
+						subscriptions.accounts[apikey].balance = balance;
           res.find('shared_account').each(function(i){
             var $this = $(this),
             response = {
