@@ -27,3 +27,8 @@ Here are some of our ideas:
 
 If you have any ideas that you would like to see in the plugin, please let us know.
 We're open to suggestions. :)
+
+### Recent Changes
+
+- Graph will now be updated when you have the popup window open. -slickplaid
+- Graph and icon turn red when >90% usage -slickplaid
