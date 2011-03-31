@@ -122,7 +122,7 @@ var displayAccounts = function(){
       lines.push({
         data: line
         ,label: account.boxes[box][lastPoint-1].percent+'%'
-        ,color: '#76857e'
+        ,color: (account.boxes[box][lastPoint-1].percent >= 90) ? '#CF0C13' : '#76857e'
         ,xaxis: 1
         ,yaxis: 1
       });
