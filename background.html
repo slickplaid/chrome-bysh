@@ -1,6 +1,6 @@
 <!doctype html><head><script src="http://code.jquery.com/jquery-1.5.1.js" type="text/javascript"></script><script>
 
-var version,
+var version, notified = 0,
 subscriptions = {
   accounts: {}
   ,timers: {}
@@ -53,7 +53,20 @@ subscriptions = {
               ,upgradeAvailable: $this.find('upgrade_available').text()
             };
             // check to see if we're >90% usage. If so, we'll change the icon to red
-            if(response.percent >= 90){
+            if(response.percent > 100){
+              if(!notified){
+                chrome.browserAction.setIcon({path:"logo_fail.png"});
+                var notification = webkitNotifications.createNotification(
+                  'logo.png',  // icon url - can be relative
+                  response.box,  // notification title
+                  'Your ByteSized Box is over quota ('+response.percent+'%, '+response.liveQuota+'), strange things might start happening. Please clean up.'  // notification body text
+                );
+                notification.show();
+                notified = 1;
+                subscriptions.timers.apiOverLimit = setTimeout(function(){ notified = 0; }, 1000*60*60*4); // notify every 4 hours
+              }
+              console.warn('Account over quota at '+response.percent+'% usage. API_KEY: '+apikey);
+            } else if(response.percent >= 90){
               chrome.browserAction.setIcon({path:"logo_fail.png"});
               console.warn('Account at '+response.percent+'% usage. API_KEY: '+apikey);
             } else {
