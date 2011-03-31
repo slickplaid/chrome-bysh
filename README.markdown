@@ -11,7 +11,8 @@ Keeps track of your box's quota. At the moment, that's about all it does.
 
 ## Where to get it?
 
-Right now, the plugin is in closed beta but it should be released in the next couple days.
+The Chrome Web Store:
+https://chrome.google.com/webstore/detail/gdjapkecijflfibegmmoiaehkplnmloc
 
 ## Future Plans
 
