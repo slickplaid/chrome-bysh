@@ -105,16 +105,17 @@ var displayAccounts = function(){
       ,percentFormat = function(v,axis){
         return v.toFixed(axis.tickDecimals)+"%";
       }
-      ,mbFormat = function(v,axis){
-        return v.toFixed(axis.tickDecimals)+"mb";
+      ,gbFormat = function(v,axis){
+        return v.toFixed(axis.tickDecimals)+"gb";
       };
       
       data.forEach(function(d,i){
         // the +new Date() is a trick to get it to
         // turn into a string, and return a timestamp
-        var time = (new Date(d.at)).getTime();
-        line.push([time,d.percent]);
-        line2.push([time,d.quota]);
+        var time = (new Date(d.at)).getTime()
+        ,offset = (new Date().getTimezoneOffset()*60*1000);
+        line.push([time-offset,d.percent]);
+        line2.push([time-offset,d.quota]);
       });
       
       // line #1, %
@@ -147,7 +148,7 @@ var displayAccounts = function(){
           min: 0,
           max: max_quota,
           color: '#f9f9f9',
-          tickFormatter: mbFormat
+          tickFormatter: gbFormat
         }
       ];
       options.xaxes = [{ mode: 'time', color: '#f9f9f9', ticks: 4 }];
