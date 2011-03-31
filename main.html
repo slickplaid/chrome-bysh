@@ -77,8 +77,7 @@ var displayAccounts = function(){
         var boxes = Object.keys(data.boxes);
         boxes.forEach(function(box,x){
           var l = data.boxes[box].length;
-
-          $('.a'+i).append('<div class="account-info"><span class="box">'+box+'</span><span class="quota">' + data.boxes[box][l-1].liveQuota + '</span></div>'+
+          $('.a'+i).append('<div class="account-info"><span class="box">'+box+'</span><span class="quota" id="quota-for-'+ box +'">' + data.boxes[box][l-1].liveQuota + '</span></div>'+
                            '<div class="graph-wrapper"><div class="a'+i+'stat'+x+' plot" box="'+box+'"'+
                            'style="width: 300px; height: 100px;"></div></div>');
         });
@@ -119,7 +118,7 @@ var displayAccounts = function(){
       });
       
       // update the info above the graph
-      $('.quota').text(account.boxes[box][lastPoint-1].liveQuota);
+      $('#quota-for-' + box).text(account.boxes[box][lastPoint-1].liveQuota);
       $('.balance').text(account.balance);
       
       // line #1, %
