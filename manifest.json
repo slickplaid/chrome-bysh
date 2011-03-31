@@ -1,6 +1,6 @@
 {
-  "name": "ByteSized for Chrome",
-  "version": "1.0",
+  "name": "Bytesized's Pandora",
+  "version": "1.0.1",
   "description": "Displays useful information about your ByteSized Account",
   "options_page": "options.html",
   "background_page": "background.html",
@@ -12,5 +12,8 @@
     "http://bytesized-hosting.com/",
     "notifications",
     "background"
-  ]
+  ],
+	"icons": { "16": "icon16.png",
+	           "48": "icon48.png",
+						 "96": "icon96.png"}
 }
