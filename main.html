@@ -121,7 +121,7 @@ var displayAccounts = function(){
       // line #1, %
       lines.push({
         data: line
-        ,label: '%'
+        ,label: account.boxes[box][lastPoint-1].percent+'%'
         ,color: '#76857e'
         ,xaxis: 1
         ,yaxis: 1
@@ -129,6 +129,7 @@ var displayAccounts = function(){
       // line #2, mb
       lines.push({
         data: line2
+        ,label: Math.round(account.boxes[box][lastPoint-1].quota*100)/100+'gb'
         ,color: '#76857e'
         ,xaxis: 1
         ,yaxis: 2
@@ -185,6 +186,8 @@ var displayAccounts = function(){
 $(function(){
   displayAccounts();
   plotData();
+  // update every 10 seconds
+  var plotTimer = setInterval(function(){ plotData(); }, 1000*10);
 });
   </script>
   

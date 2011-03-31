@@ -23,6 +23,7 @@ Here are some of our ideas:
 - Show open tickets
 - Respond to open tickets
 - Track other usage on your box
+- Poll faster when you're looking at your usage, slower when you're not
 
 If you have any ideas that you would like to see in the plugin, please let us know.
 We're open to suggestions. :)

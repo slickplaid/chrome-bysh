@@ -52,6 +52,14 @@ subscriptions = {
               ,webVNCLink: $this.find('web_vnc_link').text()
               ,upgradeAvailable: $this.find('upgrade_available').text()
             };
+            // check to see if we're >90% usage. If so, we'll change the icon to red
+            if(response.percent >= 90){
+              chrome.browserAction.setIcon({path:"logo_fail.png"});
+              console.warn('Account at '+response.percent+'% usage. API_KEY: '+apikey);
+            } else {
+              chrome.browserAction.setIcon({path:"logo.png"});
+              console.log('Account at '+response.percent+'% usage. API_KEY: '+apikey);
+            }
             // we'll push the data and save it to local storage, removing all but the newest 100 responses
             if(!(subscriptions.accounts[apikey].boxes[response.box] instanceof Array))
               subscriptions.accounts[apikey].boxes[response.box] = []; // hacky way to test :(
