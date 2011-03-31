@@ -121,12 +121,18 @@ subscriptions = {
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse){
   if(request.method == 'save' && request.apikey !== undefined){
     subscriptions.newAccount(request.apikey);
+		// enable the timer
+    subscriptions.timers[request.apikey] = setInterval(function(){
+      console.log('Poking account: '+request.apikey);
+      subscriptions.accounts[request.apikey].poke();
+    }, subscriptions.settings.interval);
+
     subscriptions.accounts[request.apikey].poke(function(status){
       if(status == '500'){
         sendResponse({status: '500'});
-      } else if(status == '')
-      sendResponse({status: 'OK'});
-    });
+      } else if(status == '' || status == 200)
+      	sendResponse({status: 'OK'});
+    	});
   } else if(request.method == 'delete' && request.apikey !== undefined){
     subscriptions.accounts[request.apikey].destroy();
     sendResponse({status: 'OK'});
@@ -139,7 +145,7 @@ $(function(){
   // let's see if there are any saved accounts
   // or if we're using an old version of the script (just in case, sanity ya know?)
   if(localStorage.accounts === undefined || !(JSON.parse(localStorage.accounts) instanceof Array)){
-    console.log('enter account details!');
+    console.log('Please enter account details!');
     // nope! let's tell them to enter their account details
     window.open('options.html', 'bysh-options');
   } else {

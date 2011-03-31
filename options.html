@@ -63,7 +63,7 @@
     <script src="js/options.js" type="text/javascript"></script>
 		<script>
 var form = $('<section><form>'+
-						  '<div><label for="apikey">API-key:</label><input name="apikey" type="text" required></div>'+
+						  '<div><label for="apikey">API-key:</label><input name="apikey" type="text" required style="width: 300px"></div>'+
 						  '<div><button class="save">Save</button></div></form></section>');
 
 var displayAccounts = function(){
@@ -72,7 +72,7 @@ var displayAccounts = function(){
 		if(accounts.length){
 				accounts.forEach(function(apikey,i){
 						var data = JSON.parse(localStorage[apikey]);
-						console.log(data);
+
 						$('#accounts').append('<div class="account a'+i+'" apikey="'+apikey+'" style="display: none;">'+
 																	'<span class="user">'+data.login+'</span><span class="pass"></span>'+
 																	'</div>');
@@ -84,7 +84,6 @@ var displayAccounts = function(){
 						$('.a'+i).fadeIn(500);
 				});
 		} else {
-				console.log(accounts.length);
 				$('#content').append(form.clone().attr('index','0'));
 		}
 };
@@ -104,7 +103,7 @@ $(function(){
 						page: 'options',
 						apikey: $this.parent().parent().find('input[name=apikey]').val()
 				}, function(res){
-						if(res.status == '200'){
+						if(res.status == 'OK'){
 								$('#status').fadeIn(500).delay(2000).fadeOut(1000);
 								$('#status').text('Account saved.');
 								var timeout = setTimeout(function(){
