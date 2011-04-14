@@ -4,6 +4,7 @@
   <script src="js/jquery-1.5.2.min.js" type="text/javascript"></script>
   <script src="js/jquery-ui-1.8.11.custom.min.js" type="text/javascript"></script>
   <script src="flot/jquery.flot.min.js" type="text/javascript"></script>
+  <script src="js/textile.js" type="text/javascript"></script>
   <link href="css/custom-theme/jquery-ui-1.8.11.custom.css" media="screen" rel="stylesheet" type="text/css" />
   <style>
   body {
@@ -120,9 +121,7 @@ var displayAccounts = function(){
   ,news = JSON.parse(localStorage[apikey]).news;
   
   news.forEach(function(d,i){
-    d.body = d.body.replace(/\r\n\r\n/, '<br><br>');
-    d.body = d.body.replace(/\r\n/, '<br>');
-    d.body = d.body.replace(/\n/, '<br>');
+    d.body = convert(d.body);
     $('#news').append('<h3><a href="#">'+d.title+'</a></h3><div><p>'+d.body+'</p></div>');
   });
   $('#news').accordion({ fillSpace: true });
