@@ -35,8 +35,10 @@ subscriptions = {
             ,login = res.find('login').text()
             ,balance = res.find('balance').text()
             ,len = res.length;
+            
 						subscriptions.accounts[apikey].login = login;
 						subscriptions.accounts[apikey].balance = balance;
+            
           res.find('shared_account').each(function(i){
             var $this = $(this),
             response = {
@@ -83,8 +85,21 @@ subscriptions = {
               subscriptions.accounts[apikey].boxes[response.box].shift();
             }
           }); // end shared-account loop
+          
+          // store news items
+          subscriptions.accounts[apikey].news = []; // reset array
+          // we shouldn't need to store or keep track of old news items, should we?
+          res.find('news_item').each(function(i){
+            var $this = $(this);
+            subscriptions.accounts[apikey].news.push({
+              title: $this.find('title').text()
+              ,body: $this.find('body').text()
+            });
+          });
+          
+          // END - Store data at this point
           localStorage[apikey] = JSON.stringify(subscriptions.accounts[apikey]);
-          //console.log(xhr.status);
+         
           if(typeof callback === 'function'){
             callback(xhr.status);
           }
