@@ -30,7 +30,10 @@ If you have any ideas that you would like to see in the plugin, please let us kn
 We're open to suggestions. :)
 
 ### Recent Changes
+- BySH News Displayed in accordion
+- Cool tabs ftw
+- Tastes like chicken
 - Changed polling to five minutes
 - Graph will now be updated when you have the popup window open. -slickplaid
 - Graph and icon turn red when >90% usage -slickplaid
-- Added IRC Hook
+- Added IRC Hook to dev channel
