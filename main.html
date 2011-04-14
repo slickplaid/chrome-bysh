@@ -121,7 +121,7 @@ var displayAccounts = function(){
   ,news = JSON.parse(localStorage[apikey]).news;
   
   news.forEach(function(d,i){
-    d.body = convert(d.body);
+    d.body = convert(d.body).replace(/a href/g, 'a target="main" href');
     $('#news').append('<h3><a href="#">'+d.title+'</a></h3><div><p>'+d.body+'</p></div>');
   });
   $('#news').accordion({ fillSpace: false, autoHeight: false });
