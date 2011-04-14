@@ -124,7 +124,7 @@ var displayAccounts = function(){
     d.body = convert(d.body);
     $('#news').append('<h3><a href="#">'+d.title+'</a></h3><div><p>'+d.body+'</p></div>');
   });
-  $('#news').accordion({ fillSpace: true });
+  $('#news').accordion({ fillSpace: false, autoHeight: false });
 }
 ,plotData = function(){
   $('.account').each(function(){
